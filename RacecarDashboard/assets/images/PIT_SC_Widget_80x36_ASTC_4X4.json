@@ -1,0 +1,18 @@
+{
+  "eab_version": "4.1",
+  "chip_gen": "Pre82x",
+  "input_name": "PIT_SC_Widget.png",
+  "output_name": [
+    "PIT_SC_Widget_80x36_ASTC_4X4.raw"
+  ],
+  "output_size": [
+    2880
+  ],
+  "type": "bitmap",
+  "format": "ASTC_4X4",
+  "compressed": "no",
+  "width": 80,
+  "height": 36,
+  "stride": 64,
+  "astc_preset": "exhaustive"
+}

@@ -1,0 +1,18 @@
+{
+  "eab_version": "4.1",
+  "chip_gen": "Pre82x",
+  "input_name": "Widget_Speed.png",
+  "output_name": [
+    "Widget_Speed_104x56_ASTC_4X4.raw"
+  ],
+  "output_size": [
+    5824
+  ],
+  "type": "bitmap",
+  "format": "ASTC_4X4",
+  "compressed": "no",
+  "width": 104,
+  "height": 56,
+  "stride": 64,
+  "astc_preset": "exhaustive"
+}

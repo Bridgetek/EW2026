@@ -1,0 +1,111 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+@font-face {
+    font-family: "user_font";
+    src: url("C:/Users/aaron.jones/Desktop/Motorsport-Electronics/Hero Widgets/eurostile.TTF");
+}
+
+.eab_font {
+  font-family: "user_font";
+  font-size: 30px;
+  color: #34568B;
+  background-color: #f0f0f0;
+  padding: 8px;
+
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;           /* important for flex/grid children */
+
+  white-space: normal;
+  overflow-wrap: anywhere;  /* try to allow breaks */
+  word-break: break-all;    /* most aggressive CSS break */
+  line-break: anywhere;     /* helps for CJK-like line breaking */
+}
+
+#converted_chars_tbl {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 50%;
+}
+
+#converted_chars_tbl td, #converted_chars_tbl th {
+  border: 1px solid #ddd;  
+  padding: 5px;
+  padding-left: 10px;
+}
+
+#converted_chars_tbl tr:nth-child(even){background-color: #f2f2f2;}
+
+#converted_chars_tbl tr:hover {background-color: coral;}
+
+#converted_chars_tbl th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #04AA6D;
+  color: white;
+}
+
+#converted_chars_tbl tr td:first-child {
+  font: 25px user_font;
+  color: #34568B;
+}
+
+td.font_non_print {
+    font-family: Arial, sans-serif !important;
+	font-size: 16px !important;
+	color: red !important;
+}
+
+.stick {
+  position: sticky;
+  top: 0px;
+}
+
+.header {
+  background-color: #f2f2f2;
+  padding-top: 5px;
+  padding-bottom: 16px;
+}
+
+</style>
+</head>
+
+<body>
+<div class="header">
+<p style="font-family: Arial, sans-serif; font-size:18px">10 characters are converted:</p>
+<div class="eab_font" id="wrap_text">
+0123456789
+</div>
+</div>
+
+<script>
+// add <wbr> between chars to allow wrapping
+const el = document.getElementById('wrap_text');
+const txt = el.textContent || '';
+el.dataset.originalText = txt;
+el.innerHTML = Array.from(txt).map(ch => (ch === ' ' ? ' ' : ch + '<wbr>')).join('');
+</script>
+
+<br>
+
+<table id="converted_chars_tbl">
+<thead class = "stick">
+  <tr>
+    <th>Character</th>
+    <th>Index (Decimal)</th>
+    <th>Index (Hexa)</th>
+  </tr>
+</thead>
+
+<tbody> 
+<tr><td  >0</td><td>48</td><td>0x30</td></tr><tr><td  >1</td><td>49</td><td>0x31</td></tr><tr><td  >2</td><td>50</td><td>0x32</td></tr><tr><td  >3</td><td>51</td><td>0x33</td></tr><tr><td  >4</td><td>52</td><td>0x34</td></tr><tr><td  >5</td><td>53</td><td>0x35</td></tr><tr><td  >6</td><td>54</td><td>0x36</td></tr><tr><td  >7</td><td>55</td><td>0x37</td></tr><tr><td  >8</td><td>56</td><td>0x38</td></tr><tr><td  >9</td><td>57</td><td>0x39</td></tr> 
+</tbody>   
+</table>
+</body>
+</html>

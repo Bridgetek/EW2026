@@ -1,0 +1,18 @@
+{
+  "eab_version": "4.1",
+  "chip_gen": "Pre82x",
+  "input_name": "Bottom_Bar.png",
+  "output_name": [
+    "Bottom_Bar_800x8_ASTC_4X4.raw"
+  ],
+  "output_size": [
+    6400
+  ],
+  "type": "bitmap",
+  "format": "ASTC_4X4",
+  "compressed": "no",
+  "width": 800,
+  "height": 8,
+  "stride": 64,
+  "astc_preset": "exhaustive"
+}

@@ -1,0 +1,21 @@
+Name                                   : ID : Offset : Size   : Zip : Type : Sub-Type : Width : Height : Padding
+
+default-fl.blob                        : 0  : 0      : 4096   : 0   : 1    : 0        : 0     : 0      : 0      
+Carbon_Fiber_800x480_ASTC_4X4.raw      : 1  : 4096   : 384000 : 0   : 2    : 37808    : 800   : 480    : 0      
+LED_32x32_ASTC_4X4.raw                 : 2  : 388096 : 1024   : 0   : 2    : 37808    : 32    : 32     : 0      
+Trackmap_96x60_ASTC_4X4.raw            : 3  : 389120 : 5760   : 0   : 2    : 37808    : 96    : 60     : 0      
+Arrows_96x192_ASTC_4X4.raw             : 4  : 394880 : 18432  : 0   : 2    : 37808    : 96    : 192    : 0      
+Widget_Gear_152x152_ASTC_4X4.raw       : 5  : 413312 : 23104  : 0   : 2    : 37808    : 152   : 152    : 0      
+Widget_RPM_152x56_ASTC_4X4.raw         : 6  : 436416 : 8512   : 0   : 2    : 37808    : 152   : 56     : 0      
+Widget_Speed_104x56_ASTC_4X4.raw       : 7  : 444928 : 5824   : 0   : 2    : 37808    : 104   : 56     : 0      
+Bottom_Bar_800x8_ASTC_4X4.raw          : 8  : 450752 : 6400   : 0   : 2    : 37808    : 800   : 8      : 0      
+Car_Overhead_44x80_ASTC_4X4.raw        : 9  : 457152 : 3520   : 0   : 2    : 37808    : 44    : 80     : 0      
+Battery_Cells_40x1440_ASTC_4X4.raw     : 10 : 460672 : 57600  : 0   : 2    : 37808    : 40    : 1440   : 0      
+Oil_Water_Icons_32x64_ASTC_4X4.raw     : 11 : 518272 : 2048   : 0   : 2    : 37808    : 32    : 64     : 0      
+Steering_Wheel_32x32_ASTC_4X4.raw      : 12 : 520320 : 1024   : 0   : 2    : 37808    : 32    : 32     : 0      
+Side_Gauge_L_136x104_ASTC_4X4.raw      : 13 : 521344 : 14144  : 0   : 2    : 37808    : 136   : 104    : 0      
+Side_Gauge_R_136x104_ASTC_4X4.raw      : 14 : 535488 : 14144  : 0   : 2    : 37808    : 136   : 104    : 0      
+Side_Gauge_L_Fill_136x104_ASTC_4X4.raw : 15 : 549632 : 14144  : 0   : 2    : 37808    : 136   : 104    : 0      
+Side_Gauge_R_Fill_136x104_ASTC_4X4.raw : 16 : 563776 : 14144  : 0   : 2    : 37808    : 136   : 104    : 0      
+PIT_SC_Widget_80x36_ASTC_4X4.raw       : 17 : 577920 : 2880   : 0   : 2    : 37808    : 80    : 36     : 0      
+eurostile_150_L8.raw                   : 18 : 580800 : 93988  : 0   : 112  : 0        : 0     : 0      : 1052   

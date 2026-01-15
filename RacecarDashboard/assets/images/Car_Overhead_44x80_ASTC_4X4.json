@@ -1,0 +1,18 @@
+{
+  "eab_version": "4.1",
+  "chip_gen": "Pre82x",
+  "input_name": "Car_Overhead.png",
+  "output_name": [
+    "Car_Overhead_44x80_ASTC_4X4.raw"
+  ],
+  "output_size": [
+    3520
+  ],
+  "type": "bitmap",
+  "format": "ASTC_4X4",
+  "compressed": "no",
+  "width": 44,
+  "height": 80,
+  "stride": 64,
+  "astc_preset": "exhaustive"
+}

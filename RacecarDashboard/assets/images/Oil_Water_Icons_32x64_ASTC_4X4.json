@@ -1,0 +1,18 @@
+{
+  "eab_version": "4.1",
+  "chip_gen": "Pre82x",
+  "input_name": "Oil_Water_Icons.png",
+  "output_name": [
+    "Oil_Water_Icons_32x64_ASTC_4X4.raw"
+  ],
+  "output_size": [
+    2048
+  ],
+  "type": "bitmap",
+  "format": "ASTC_4X4",
+  "compressed": "no",
+  "width": 32,
+  "height": 64,
+  "stride": 64,
+  "astc_preset": "exhaustive"
+}

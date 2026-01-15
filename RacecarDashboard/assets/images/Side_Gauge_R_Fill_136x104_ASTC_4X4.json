@@ -1,0 +1,18 @@
+{
+  "eab_version": "4.1",
+  "chip_gen": "Pre82x",
+  "input_name": "Side_Gauge_R_Fill.png",
+  "output_name": [
+    "Side_Gauge_R_Fill_136x104_ASTC_4X4.raw"
+  ],
+  "output_size": [
+    14144
+  ],
+  "type": "bitmap",
+  "format": "ASTC_4X4",
+  "compressed": "no",
+  "width": 136,
+  "height": 104,
+  "stride": 64,
+  "astc_preset": "exhaustive"
+}

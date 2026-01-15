@@ -1,0 +1,18 @@
+{
+  "eab_version": "4.1",
+  "chip_gen": "Pre82x",
+  "input_name": "Arrows.png",
+  "output_name": [
+    "Arrows_96x192_ASTC_4X4.raw"
+  ],
+  "output_size": [
+    18432
+  ],
+  "type": "bitmap",
+  "format": "ASTC_4X4",
+  "compressed": "no",
+  "width": 96,
+  "height": 192,
+  "stride": 64,
+  "astc_preset": "exhaustive"
+}
