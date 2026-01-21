@@ -45,15 +45,14 @@
 #include <MCU.h> // For DEBUG_PRINTF only
 
 #include "eve_example.h"
-//#include "math.h"
-#include "trig_furman.h"
+#include "trig_furman.h" // for trig math functions
 
 // ######################################################################################################################################################################################################
 // #######################################################      Ensure correct EVE settings and enable any defines we wish to use     ###################################################################
 // ######################################################################################################################################################################################################
 
-#if IS_EVE_API(1,2,3,5)
-#error This project needs EVE API 4 (BT81x). Please configure ../eve_library/include/EVE_config.h accordingly 
+#if IS_EVE_API(1,2,5)
+#error This project needs EVE API 3/4 (BT81x). Please configure ../eve_library/include/EVE_config.h accordingly 
 #endif
 
 #if EVE_DISP_WIDTH < 800 || EVE_DISP_HEIGHT < 480
@@ -140,6 +139,9 @@ EVE_ASSET_PROPS eurostile_150_L8;
 // PIT_SC_Widget_80x36_80x36_ASTC_4X4.raw : 577920 : 2880  
 // eurostile_150_L8.raw                   : 580800 : 93988
 
+/**
+ @brief Function to eset asset properties for any graphics assets we wish to utilsie.
+ */
 void set_asset_props(void)
 {
     //images
@@ -274,6 +276,9 @@ void set_asset_props(void)
 // #######################################################                  Code to set flash to full speed mode                      ###################################################################
 // ######################################################################################################################################################################################################
 
+/**
+ @brief Function to ensure attached flash can enter FAST mode.
+ */
 void flash_full_speed(void)
 {
     uint8_t Flash_Status = 0;
@@ -364,6 +369,10 @@ void flash_full_speed(void)
 // #######################################################                      Code for the Loading Assets                         #####################################################################
 // ######################################################################################################################################################################################################
 
+/**
+ @brief Function to perfrom a flash read of data to RAM_G.
+ @param asset pointer to asset properties struct
+ */
 void assetLoad(EVE_ASSET_PROPS *asset)
 {
     uint32_t final;
@@ -380,6 +389,9 @@ void assetLoad(EVE_ASSET_PROPS *asset)
     asset->RAM_G_EndAddr = final;
 }
 
+/**
+ @brief Function to set asset properties for Handle and RAM_G_Start, and load assets from Flash to RAM_G.
+ */
 void eve_display_load_assets(void)
 {
     uint8_t AssetHandle = 0;
@@ -505,7 +517,74 @@ void eve_display_load_assets(void)
 // #######################################################                      Code for the Widgets Example                          ###################################################################
 // ######################################################################################################################################################################################################
 
+/**
+ @brief Function to render a backround box for a widget. This function renders a alpha background box, with shadow boxes
+ to give the appearance of a recessed box.
+ @param input_x x value for top left of widget
+ @param input_y y value for top left of widget
+ @param width variable for the total width of the box
+ @param height variable for the total height of the box
+ @param height variable for the total height of the box
+ @param box_width variable for setting rounded edges of the box
+ */
+void backgroundBox(uint16_t input_x, uint16_t input_y, uint16_t width, uint16_t height, uint16_t box_width) {
 
+    // save graphics context
+    //EVE_SAVE_CONTEXT();
+    // NOTE: commented out as this is generally called in the widget just before calling this funciton
+   
+    // set alpha and color for background shading
+    EVE_COLOR_A(100);
+    EVE_COLOR_RGB(0,0,0); // black
+    // set input box width
+    EVE_LINE_WIDTH(box_width * 16);
+
+    // begin drawing boxes
+    EVE_BEGIN(EVE_BEGIN_RECTS);
+
+    // stencil the first box as we only want to draw the shadows where this box isnt drawn
+    EVE_STENCIL_OP(EVE_STENCIL_INCR, EVE_STENCIL_INCR);
+    // but only stenicl areas that have an alpha greater than 55 so we dont include the alpha'd edges of this box
+    EVE_ALPHA_FUNC(EVE_TEST_GREATER, 55);
+    // center box
+    EVE_VERTEX2F((input_x + box_width + 2) * 16, (input_y + box_width + 2) * 16); //2 is the width of our shadow
+    EVE_VERTEX2F(((input_x + width) - box_width - 2) * 16, ((input_y + height) - box_width - 2) * 16); //2 is the width of our shadow
+    // we dont want to keep incrementing the stenicl from here
+    EVE_STENCIL_OP(EVE_STENCIL_KEEP, EVE_STENCIL_KEEP);
+
+    // now reset the alpha func test
+    EVE_ALPHA_FUNC(EVE_TEST_GREATER, 0);
+    // only draw these boxes where the initial box isnt drawn
+    EVE_STENCIL_FUNC(EVE_TEST_NOTEQUAL, 1, 255);
+
+    
+    // reset alpha to full
+    EVE_COLOR_A(255);
+
+    // swap the drawing order of rects below to swap the 3D effect from recessed to embossed
+    // bottom right shadow
+    EVE_COLOR_RGB(220, 220, 220); // grey
+    EVE_VERTEX2F((input_x + box_width + 1) * 16, (input_y + box_width + 1) * 16); // + 1 to offset from the box drawn below
+    EVE_VERTEX2F(((input_x + width) - box_width) * 16, ((input_y + height) - box_width) * 16);
+    // top left shadow
+    EVE_COLOR_RGB(0, 0, 0); // black
+    EVE_VERTEX2F((input_x + box_width) * 16, (input_y + box_width) * 16); //2 is the width of our shadow
+    EVE_VERTEX2F(((input_x + width - box_width) - 1) * 16, ((input_y + height) - box_width - 1) * 16); // use 1 here as it gives a better effect 
+
+    // restore graphics context
+    EVE_RESTORE_CONTEXT();
+}
+
+/**
+ @brief Function to render a traction circle on screen. This function renders a point within a traction circle diagram based 
+ upon x/y axis accelration data. It can also display the last 4 historical data points based on the MOTION_BLUR_TRACTION define.
+ @param input_x x value for top left of widget
+ @param input_y y value for top left of widget
+ @param array_end variable to denote the end of the traction array dataset
+ @param count variable for current count through data arrays
+ @param acc_x pointer to data array holding x axis accelaration data 
+ @param acc_y pointer to data array holding y axis accelaration data
+ */
 void tractionCircle(uint16_t input_x, uint16_t input_y, uint16_t array_end, uint16_t count, int16_t *acc_x, int16_t *acc_y) {
  
     //total width 108, height 108
@@ -513,18 +592,12 @@ void tractionCircle(uint16_t input_x, uint16_t input_y, uint16_t array_end, uint
  
     // save graphics context
     EVE_SAVE_CONTEXT();
- 
-    // set alpha and color for background shading
-    EVE_COLOR_A(120);
-    EVE_COLOR_RGB(0,0,0);
-    EVE_LINE_WIDTH(64); //4
-    EVE_BEGIN(EVE_BEGIN_RECTS);
+
+    // draw background box
+    backgroundBox(input_x, input_y, 108, 108, 4);
+
+    // set desried vertex format for widget
     EVE_VERTEX_FORMAT(0);
-    EVE_VERTEX2F((input_x + 5), (input_y + 5));
-    EVE_VERTEX2F((input_x + 105), (input_y + 105));
-    // reset color and alpha
-    EVE_COLOR_A(255);
-    EVE_COLOR_RGB(255, 255, 255);
  
     // centre point
     EVE_BEGIN(EVE_BEGIN_POINTS);
@@ -644,6 +717,16 @@ void tractionCircle(uint16_t input_x, uint16_t input_y, uint16_t array_end, uint
     EVE_RESTORE_CONTEXT();
 }
 
+/**
+ @brief Function to render a icon indicator on screen. This function will render a bitmap inidcator icon within an outline box, with 
+ the ability to render in a ON or OFF state as required.
+ @param input_x x value for center of widget
+ @param input_y y value for center of widget
+ @param image pointer to asset properties for indicator bitmap image
+ @param cell variable to denote the desired bitmap cell to render
+ @param color variable to set bitmap redner colour 
+ @param state boolean to denote on/off value for indicator icon
+ */
 void iconIndicator(uint16_t input_x, uint16_t input_y, EVE_ASSET_PROPS *image, uint8_t cell, uint32_t color, bool state){
 
     //total width 42, height 42
@@ -684,6 +767,13 @@ void iconIndicator(uint16_t input_x, uint16_t input_y, EVE_ASSET_PROPS *image, u
 
 }
 
+/**
+ @brief Function to render the shift light widget on screen. This function will render a series of shift lights, taking an input
+ 'value' varaible to determine how many shift lights should be illuminated.
+ @param input_x x value for top left of widget
+ @param input_y y value for top left of widget
+ @param value variable to determine how many shift lights we wish to illuminate
+ */
 void shiftLight(uint16_t input_x, uint16_t input_y, int8_t value){
 
     // declare local variables
@@ -752,6 +842,15 @@ void shiftLight(uint16_t input_x, uint16_t input_y, int8_t value){
 
 }
 
+/**
+ @brief Function to render the corner indication widget on screen. This funciton will render a corner indication arrow (left or right) 
+ on screen along with the relevent corner number.
+ @param input_x x value for top left of widget
+ @param input_y y value for top left of widget
+ @param corner_number variable to print upcoming corner number in widget
+ @param corner_direction variable to determine if upcoming corner is left or right handed
+ @param image pointer to asset properties for indicator bitmap image
+ */
 void cornerIndicator(uint16_t input_x, uint16_t input_y, uint8_t corner_number, uint8_t corner_direction, EVE_ASSET_PROPS *image){
 
     //total width 108, height 108
@@ -760,42 +859,39 @@ void cornerIndicator(uint16_t input_x, uint16_t input_y, uint8_t corner_number, 
     // save graphics context
     EVE_SAVE_CONTEXT();
 
-    // set alpha and color for background shading
-    EVE_COLOR_A(120);
-    EVE_COLOR_RGB(0,0,0);
+    // draw background box
+    backgroundBox(input_x, input_y, 108, 108, 4);
 
     // ensure we are using the desried pixel precision
     EVE_VERTEX_FORMAT(0);
 
-    // draw background box
-    EVE_BEGIN(EVE_BEGIN_RECTS);
-    EVE_LINE_WIDTH(64); //4
-    EVE_VERTEX2F((input_x + 5), (input_y + 5));
-    EVE_VERTEX2F((input_x + 105), (input_y + 105));
-    
-    // reset color and alpha
-    EVE_COLOR_A(255);
-    EVE_COLOR_RGB(255, 255, 255);
-
     // place bitmap on screen
-    EVE_BEGIN(EVE_BEGIN_BITMAPS);
+    EVE_BEGIN(EVE_BEGIN_BITMAPS);  
     EVE_BITMAP_HANDLE(image->Handle);
     EVE_CELL(corner_direction);
-    EVE_VERTEX2F((input_x + ((110 - image->Width)/2) + 1) , (input_y + ((110 - image->CellHeight)/2) + 1));
+    EVE_VERTEX2F((input_x + ((108 - image->Width)/2)) , (input_y + ((108 - image->CellHeight)/2)));
         
     // add a number on top to indicate which corner;
     // decide where to print corner number on arrow based on cell number
     // we are using a bitmap with only two cells (0 (left arrow) and 1 (right arrow))
     if(corner_direction == 1)
-        EVE_CMD_NUMBER((input_x + 90), (input_y + 85), 29, EVE_OPT_CENTER, corner_number);
+        EVE_CMD_NUMBER((input_x + 86), (input_y + 85), 29, EVE_OPT_CENTER, corner_number);
     else
-        EVE_CMD_NUMBER((input_x + 20), (input_y + 85), 29, EVE_OPT_CENTER, corner_number);
+        EVE_CMD_NUMBER((input_x + 18), (input_y + 85), 29, EVE_OPT_CENTER, corner_number);
 
     // restore graphics context
     EVE_RESTORE_CONTEXT();
 
 }
 
+/**
+ @brief Function to render the track map widget on screen. This function will render a bitmap on screen and rotate it
+ based upon a input rotation 'angle'varaible.
+ @param input_x x value for top left of widget
+ @param input_y y value for top left of widget
+ @param angle variable to determine angle of rotation for the track map bitmap
+ @param image pointer to asset properties for track map bitmap image
+ */
 void trackMap(uint16_t input_x, uint16_t input_y, uint16_t angle, EVE_ASSET_PROPS *image){
 
     //total width 108, height 108
@@ -804,22 +900,11 @@ void trackMap(uint16_t input_x, uint16_t input_y, uint16_t angle, EVE_ASSET_PROP
     // save graphics context
     EVE_SAVE_CONTEXT();
 
+    // draw background box
+    backgroundBox(input_x, input_y, 108, 108, 4);
+
     // set pixel precision format that we want to use
     EVE_VERTEX_FORMAT(0);
-
-    // set alpha and color for background shading
-    EVE_COLOR_A(120);
-    EVE_COLOR_RGB(0,0,0);
-
-    // draw background box
-    EVE_BEGIN(EVE_BEGIN_RECTS);
-    EVE_LINE_WIDTH(64); //4
-    EVE_VERTEX2F((input_x + 5), (input_y + 5)); // + line width used above
-    EVE_VERTEX2F((input_x + 105), (input_y + 105)); // w/h - line width used above 
-    
-    // reset color and alpha
-    EVE_COLOR_A(255);
-    EVE_COLOR_RGB(255, 255, 255);
 
     // draw bitmap here
     EVE_BEGIN(EVE_BEGIN_BITMAPS);
@@ -831,7 +916,7 @@ void trackMap(uint16_t input_x, uint16_t input_y, uint16_t angle, EVE_ASSET_PROP
     // max circle value 65536
     // (+55 is the x/y vertex translate value, this will draw our 96*60 image in the middle of the 192*192 box we configured for it in the BITMAP_SIZE command above)
     // this allows us to rotate the bitmap without clipping any edges
-    EVE_CMD_TRANSLATE(((image->Width/2) + 55) * 65536, ((image->CellHeight/2) + 55) * 65536);
+    EVE_CMD_TRANSLATE(((image->Width/2) + 54) * 65536, ((image->CellHeight/2) + 54) * 65536);
     // take the angle and convert it to furmans
     // use this number to rotate the image
     EVE_CMD_ROTATE(DEG2FURMAN(angle));
@@ -846,6 +931,20 @@ void trackMap(uint16_t input_x, uint16_t input_y, uint16_t angle, EVE_ASSET_PROP
     EVE_RESTORE_CONTEXT();
 }
 
+/**
+ @brief Function to render the rev counter widget on screen. This fucntion will render a rev counter/tachometer on screen using the LINES
+ primative. A underline for the rev lines and numbers to denote every 1k RPM will also be rendered. The current reading for the rev counter
+ is based on the input 'value' varaible.
+ @param input_x x value for top left of widget
+ @param input_y y value for top left of widget
+ @param radius radius of the circle that the rev lines will out edge will align to 
+ @param gauge_thickness this value - 'radius' determines the inner circle radius for the inside edge of the rev lines 
+ @param start_angle angle in degrees we want to start the rev lines from
+ @param max_RPM degrees past start_angle where we want to finish rendering lines
+ @param redline variable to denote where the redline will start in the rev coutner
+ @param font_handle font handle to be used to print xK rev numbers 
+ @param value current rev value in 100s of revs 
+ */
 void revCounter(uint16_t input_x, uint16_t input_y, uint16_t radius, uint8_t gauge_thickness, uint8_t start_angle, uint8_t max_RPM, uint8_t redline, uint8_t font_handle, int16_t value){
 
     // 0 degrees is the bottom of the circle
@@ -948,7 +1047,7 @@ void revCounter(uint16_t input_x, uint16_t input_y, uint16_t radius, uint8_t gau
         EVE_VERTEX2F((gauge_circle_x * 16) - line_start_x, (gauge_circle_y * 16) + line_start_y); 
     }
     EVE_END();
-   
+    
     // reset scissor
     EVE_SCISSOR_SIZE(2048,2048);
     EVE_SCISSOR_XY(0, 0);
@@ -1039,6 +1138,16 @@ void revCounter(uint16_t input_x, uint16_t input_y, uint16_t radius, uint8_t gau
 
 }
 
+/**
+ @brief Function to render the fuel indicator widget on screen. This function will render a fuel indicator on screen consiting of two bitmaps, one for the outline and one for the fuel level.
+ The fill bitmap is stenciled to draw only the % indicated by the input 'value' varaible.
+ @param input_x x value for top left of widget
+ @param input_y y value for top left of widget
+ @param outline pointer to asset properties for the outline bitmap
+ @param fill pointer to asset properties for the fill bitmap
+ @param color variable to set the colour of the fill bitmap
+ @param value current value for the fill indication bitmap (0-100)
+ */
 void fuelIndicator(uint16_t input_x, uint16_t input_y, EVE_ASSET_PROPS *outline, EVE_ASSET_PROPS *fill, uint32_t color, int8_t value){
 
     //total width 136, height 120
@@ -1115,6 +1224,15 @@ void fuelIndicator(uint16_t input_x, uint16_t input_y, EVE_ASSET_PROPS *outline,
 
 }
 
+/**
+ @brief Function to render the pit and safety car icons on screen. This function will render a will render two bitmaps on screen, the first bitmap
+ in its native orientation and the second bitmap a mirrored version of the first. It will colour these bitmaps based upon input booleans.
+ @param input_x x value for top left of widget
+ @param input_y y value for top left of widget
+ @param image pointer to asset properties for the bitmap image
+ @param pit boolean to denote if the pit bitmap should be coloured
+ @param sc boolean to denote if the sc bitmap should be coloured
+ */
 void pitAndScWidget(uint16_t input_x, uint16_t input_y, EVE_ASSET_PROPS *image, bool pit, bool sc){
 
     //total width 260, height 38
@@ -1172,7 +1290,14 @@ void pitAndScWidget(uint16_t input_x, uint16_t input_y, EVE_ASSET_PROPS *image, 
 
 }
 
-void drsIcon(uint16_t input_x, uint16_t input_y, uint8_t value){
+/**
+ @brief Function to render the DRS icon on screen. This function will render a will render a rectangle and use alpha belnding to create an outline shape
+ for the DRS text. It will be coloured in based upon the 'on' variable input.
+ @param input_x x value for top left of widget
+ @param input_y y value for top left of widget
+ @param on varible to determine if DRS icon is illuminated 
+ */
+void drsIcon(uint16_t input_x, uint16_t input_y, uint8_t on){
 
     //total width 60, height 40
     //----------------------------------------
@@ -1231,7 +1356,7 @@ void drsIcon(uint16_t input_x, uint16_t input_y, uint8_t value){
     EVE_BLEND_FUNC(EVE_BLEND_SRC_ALPHA, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
 
     // colour in the icon if DRS is active
-    if (value == 1){
+    if (on == 1){
         EVE_COLOR_RGB(0,175,0); // green
         EVE_BEGIN(EVE_BEGIN_RECTS);
         EVE_VERTEX2F((input_x + 6) * 16, (input_y + 6) * 16);
@@ -1248,6 +1373,16 @@ void drsIcon(uint16_t input_x, uint16_t input_y, uint8_t value){
 
 }
 
+/**
+ @brief Function to render the boost indicator widget on screen. This function will render a boost indicator on screen consiting of two bitmaps, one for the outline and one for the boost level.
+ The fill bitmap is stenciled to re-draw the fill bitmap with a higher alpha value based on input 'value' varaible.
+ @param input_x x value for top left of widget
+ @param input_y y value for top left of widget
+ @param outline pointer to asset properties for the outline bitmap
+ @param fill pointer to asset properties for the fill bitmap
+ @param color variable to set the colour of the fill bitmap
+ @param value current value for the fill indication bitmap (0-100)
+ */
 void boostIndicator(uint16_t input_x, uint16_t input_y, EVE_ASSET_PROPS *outline, EVE_ASSET_PROPS *fill, int8_t value){
 
     //total width 136, height 120
@@ -1328,6 +1463,13 @@ void boostIndicator(uint16_t input_x, uint16_t input_y, EVE_ASSET_PROPS *outline
 
 }
 
+/**
+ @brief Function to render the IAT temparature bars on the screen. This function will render a BARGRAPH bitmap on the screen 
+ consisting of 6 bars whos values are dertmined by the 'values' variable.
+ @param input_x x value for top left of widget
+ @param input_y y value for top left of widget
+ @param values pointer to array containing bargraph values for each bar in the BARHRAPH bitmap
+ */
 void iatGraph(uint16_t input_x, uint16_t input_y, uint8_t *values){
 
     //total width 64, height 25
@@ -1387,6 +1529,7 @@ void iatGraph(uint16_t input_x, uint16_t input_y, uint8_t *values){
     // now we can set the height we actaully want for the bitmap here (19)
     // nomrally we would use EVE_FILTER_NEAREST below, but if we use BILINEAR and postionion the bitmap
     // on a Y value with .5 then we get a nice alpha effect on the top edge
+    // NOTE: if we were using EVE_FILTER_NEAREST we would need to set the height to (19 + 1), to accuont for 0 base of barraph data
     EVE_BITMAP_SIZE(EVE_FILTER_BILINEAR, EVE_WRAP_BORDER, EVE_WRAP_BORDER, 0, 19);
 
     // as the bitmap height is 19, and we have used the trick above for the alpha edge the valid range
@@ -1395,20 +1538,21 @@ void iatGraph(uint16_t input_x, uint16_t input_y, uint8_t *values){
 
     // now we draw the bargraph on screen
     EVE_BEGIN(EVE_BEGIN_BITMAPS);
-    EVE_VERTEX2F((input_x + 13) * 16, ((input_y + 1) * 16) + 8);
+    EVE_VERTEX2F((input_x + 14) * 16, ((input_y + 1) * 16) + 8);
     EVE_END();
 
     // now we can dynamically determine the values for each of the bars in our graph by populating the 
     // area in RAM_G where the bargrah has been configured via the CMD_MEMSET command, we can write
     // the value of and number of bytes we want. As the total bargraph is 48 pixels, and we want 6 bars
     // the we can write a value for every 8 bytes of data from the start of the bargraph data up to 48 bytes
+    // NOTE: we are only going to write for 7 bytes here to leave a 1 px gap between the individual bars
 
-    EVE_CMD_MEMSET(barGraphAddr, values[0], 8);
-    EVE_CMD_MEMSET((barGraphAddr + 8), values[1], 8);
-    EVE_CMD_MEMSET((barGraphAddr + 16), values[2], 8);
-    EVE_CMD_MEMSET((barGraphAddr + 24), values[3], 8);
-    EVE_CMD_MEMSET((barGraphAddr + 32), values[4], 8);
-    EVE_CMD_MEMSET((barGraphAddr + 40), values[5], 8);
+    EVE_CMD_MEMSET(barGraphAddr, values[0], 7);
+    EVE_CMD_MEMSET((barGraphAddr + 8), values[1], 7);
+    EVE_CMD_MEMSET((barGraphAddr + 16), values[2], 7);
+    EVE_CMD_MEMSET((barGraphAddr + 24), values[3], 7);
+    EVE_CMD_MEMSET((barGraphAddr + 32), values[4], 7);
+    EVE_CMD_MEMSET((barGraphAddr + 40), values[5], 7);
 
     //--------------------------------------------------------------------------------------------------------
     // Add numbers on top of bargraph (to indicate cylinder number)
@@ -1485,6 +1629,16 @@ void iatGraph(uint16_t input_x, uint16_t input_y, uint8_t *values){
     EVE_RESTORE_CONTEXT();
 }
 
+/**
+ @brief Function to render the speed indicator widget on screen. This function will render a bitmap on screen and text to denote
+ the current speed based on the 'value' varible.
+ @param input_x x value for top left of widget
+ @param input_y y value for top left of widget
+ @param img_handle bitmap handle number for the widget bitmap
+ @param font_handle font handle to be used for speed readout text/number
+ @param text text input for label added on top of the bitmap
+ @param value current value for the speed readout number/text
+ */
 void speedWidget(uint16_t input_x, uint16_t input_y, uint8_t img_handle, uint8_t font_handle, const char* text, int32_t value){
 
     // save graphics context
@@ -1508,7 +1662,18 @@ void speedWidget(uint16_t input_x, uint16_t input_y, uint8_t img_handle, uint8_t
 
 }
 
-void rpmWidget(uint16_t input_x, uint16_t input_y, uint8_t img_handle, uint8_t font_handle, const char* text, uint32_t color , uint16_t value){
+/**
+ @brief Function to render the RPM indicator widget on screen. This function will render a bitmap on screen and text to denote
+ the current RPM based on the 'value' varible.
+ @param input_x x value for top left of widget
+ @param input_y y value for top left of widget
+ @param img_handle bitmap handle number for the widget bitmap
+ @param font_handle font handle to be used for RPM readout text/number
+ @param text text input for label added on top of the bitmap
+ @param color used to set the text colour for the RPM readout number/text
+ @param value current value for the RPM readout number/text
+ */
+void rpmWidget(uint16_t input_x, uint16_t input_y, uint8_t img_handle, uint8_t font_handle, const char* text, uint32_t color, uint16_t value){
 
     // save graphics context
     EVE_SAVE_CONTEXT();
@@ -1534,6 +1699,16 @@ void rpmWidget(uint16_t input_x, uint16_t input_y, uint8_t img_handle, uint8_t f
 
 }
 
+/**
+ @brief Function to render the gear indicator widget on screen. This function will render a bitmap on screen and text to denote
+ the current gear based on the 'value' varible.
+ @param input_x x value for top left of widget
+ @param input_y y value for top left of widget
+ @param img_handle bitmap handle number for the widget bitmap
+ @param font_handle font handle to be used for gear readout text/number
+ @param text text input for label added on top of the bitmap
+ @param value current value for the gear readout number/text
+ */
 void gearWidget(uint16_t input_x, uint16_t input_y, uint8_t img_handle, uint8_t font_handle, uint8_t value){
 
     // save graphics context
@@ -1560,7 +1735,19 @@ void gearWidget(uint16_t input_x, uint16_t input_y, uint8_t img_handle, uint8_t 
 static uint16_t graph_buffer[58];
 static uint16_t input_index_graph = 0;
 
-void simple_scrolling_graph(uint16_t chart_topleft_x, uint16_t chart_topleft_y, uint16_t chart_width, uint16_t chart_height, uint16_t max_range, uint32_t graph_color ,uint8_t value, uint8_t visible)
+/**
+ @brief Function to render a scrolling line graph on to the screen. This fucntion will render a scrolling line graph which updated from the
+ right hand side with the latest values, with historical values scrolling acorss the screen.
+ @param chart_topleft_x x value for top left of the scrolling chart
+ @param chart_topleft_y y value for top left of the scrolling chart
+ @param chart_width width in px for the scrolling chart
+ @param chart_height height in px for the scrolling chart
+ @param max_range variable to limit that max chart value 
+ @param graph_colour varible to set the colour for the scrolling line in the chart
+ @param value newest chart value that we wish to add into the scrolling line
+ @param visible variable to determine if the chart line is drawn
+ */
+void simple_scrolling_graph(uint16_t chart_topleft_x, uint16_t chart_topleft_y, uint16_t chart_width, uint16_t chart_height, uint16_t max_range, uint32_t graph_color, uint8_t value, uint8_t visible)
 {
     // Local varibles for use in function    
     uint16_t output_index;
@@ -1646,6 +1833,13 @@ void simple_scrolling_graph(uint16_t chart_topleft_x, uint16_t chart_topleft_y, 
 
 }
 
+/**
+ @brief Function to render a air fuel ratio (AFR) widget on the screen. This funciton will draw a AFR chart on screen using the
+ simple_scrolling_graph() function, along with chart lines and text.
+ @param input_x x value for top left of widget
+ @param input_y y value for top left of widget
+ @param value latest AFR value to be added into the scrolling chart
+ */
 void afrGraph(uint16_t input_x, uint16_t input_y, int8_t value){
 
     //total width 74, height 30
@@ -1741,6 +1935,16 @@ void afrGraph(uint16_t input_x, uint16_t input_y, int8_t value){
     EVE_RESTORE_CONTEXT();
 }
 
+/**
+ @brief Function to render a vertical bar gauge widget on screen. This function will render a vertical bar guage using lines, rectanlges, and 
+ stencilling to draw a fill value for the bar based upon the input 'value' varaible. It will also stencil in the current reading to the bar 
+ and print deciption text below the bar.
+ @param input_x x value for top left of widget
+ @param input_y y value for top left of widget
+ @param color input to determine the colour for the bar section of the widget
+ @param text text input for label added on the bottom of the bar
+ @param value current value for the bar (0-100)
+ */
 void verticalBarGauge(uint16_t input_x, uint16_t input_y, uint32_t color, const char* text, int8_t value){
 
     // ensure value is in range
@@ -1848,6 +2052,16 @@ void verticalBarGauge(uint16_t input_x, uint16_t input_y, uint32_t color, const 
 
 }
 
+/**
+ @brief Function to render a arc gauge with a line indicator. This function will render a arc gauge using alpha belnding and stenciling then layer 
+ a indicator line on top for a current reading value based upon the input 'arc_user_value' variable. 
+ @param arc_centerx x value for centre of widget
+ @param arc_centerx y value for centre of widget
+ @param arc_radius radius of the circle that the arc outer edge will align to 
+ @param arc_thickness this value - 'arc_radius' determines the inner circle radius for the inside edge of arc 
+ @param arc_active_colour colour input to determine the shading of the arc
+ @param arc_user_value value input to determine the position of the current reading line on the arc
+ */
 void arc_line_gauge(uint16_t arc_centerx, uint16_t arc_centery, uint16_t arc_radius, uint16_t arc_thickness, uint32_t arc_active_color, uint8_t arc_value_user)
 {
     
@@ -1993,6 +2207,14 @@ void arc_line_gauge(uint16_t arc_centerx, uint16_t arc_centery, uint16_t arc_rad
  
 }
 
+/**
+ @brief Function to render a steering angle widget on the screen. This function will render a bitmap along with arc_line_gauge() to indicate 
+ the current steering angle based on the 'value' input variable.
+ @param input_x x value for top left of widget
+ @param input_y y value for top left of widget
+ @param image pointer to asset properties of image to be used in widget
+ @param value current steering angle value (0-255, where 0 is full left lock, 255 is full right lock)
+ */
 void steeringAngle(uint16_t input_x, uint16_t input_y, EVE_ASSET_PROPS *image, uint8_t value){
 
     //total width 72 , height 36
@@ -2027,17 +2249,31 @@ void steeringAngle(uint16_t input_x, uint16_t input_y, EVE_ASSET_PROPS *image, u
 
 }
 
+/**
+ @brief Function to render a arc gauge with a blanked point indicator. This function will render a arc gauge using alpha belnding to create the shape 
+ and blend in a indicator point based on the current reading value from the input 'arc_user_value' variable. 
+ @param arc_centerx x value for center of widget
+ @param arc_centerx y value for center of widget
+ @param arc_radius radius of the circle that the arc outer edge will align to 
+ @param arc_thickness this value - 'arc_radius' determines the inner circle radius for the inside edge of arc
+ @param arc_active_colour colour input to determine the shading of the arc
+ @param arc_user_value value input to determine the position of the current reading point on the arc
+ */
 void arc_point_gauge(uint16_t arc_centerx, uint16_t arc_centery, uint16_t arc_radius, uint16_t arc_thickness, uint32_t arc_active_color, uint8_t arc_value_user)
 {
     
+    // vairbles to determine the angles of a circle we wish to draw the arc in
+    // we could feed these in as input variables if desired as the function will support this
     uint16_t arc_min_limit = 35;
     uint16_t arc_max_limit = 146;
+    // variables for indicator range
     uint16_t arc_range = (arc_max_limit - arc_min_limit);
     uint16_t arc_value = arc_min_limit + (((arc_value_user) * arc_range) / 255);
 
     // if this is 0 the point shadow will be the same size as the arc_thickness (increment this value to grow the shadow around the indicator point)
     uint8_t shadow_size = 2;
  
+    // variables for positioning of components within the arc
     int16_t arc_active_x = 0;
     int16_t arc_active_y = 0;
  
@@ -2210,7 +2446,17 @@ void arc_point_gauge(uint16_t arc_centerx, uint16_t arc_centery, uint16_t arc_ra
  
 }
 
-void elevationWidget(uint16_t input_x, uint16_t input_y, uint8_t max, uint8_t min, uint8_t value){
+/**
+ @brief Function to render a current elevation widget on the screen. This function will render a arc_point_gauge() to indicate 
+ the current steering angle based on the 'value' input variable. Along with a small mountain constructed with LINES, and text
+ to denote the max/min elevations.
+ @param input_x x value for top left of widget
+ @param input_y y value for top left of widget
+ @param max varible for max elevation readout number
+ @param min varible for min elevation readout number
+ @param value current elevation value (0-255)
+ */
+void elevationWidget(uint16_t input_x, uint16_t input_y, uint8_t max, uint8_t min, int8_t value){
 
     // total width 90, height 90
     //----------------------------------------
@@ -2218,13 +2464,8 @@ void elevationWidget(uint16_t input_x, uint16_t input_y, uint8_t max, uint8_t mi
     // save graphics context
     EVE_SAVE_CONTEXT();
 
-    // draw outline box
-    EVE_BEGIN(EVE_BEGIN_RECTS);
-    EVE_COLOR_RGB(0, 0, 0); // black
-    EVE_COLOR_A(125);
-    EVE_LINE_WIDTH(80); // 5
-    EVE_VERTEX2F((input_x + 5) * 16, (input_y + 5) * 16);
-    EVE_VERTEX2F((input_x + 85) * 16, (input_y + 85) * 16);
+    // draw background box
+    backgroundBox(input_x, input_y, 90, 90, 4);
 
     // draw mountain
     EVE_COLOR_A(255);
@@ -2262,6 +2503,20 @@ void elevationWidget(uint16_t input_x, uint16_t input_y, uint8_t max, uint8_t mi
 
 }
 
+/**
+ @brief Function to render a tyre temparature widget on the screen. This function will render a bitmap along with the current tyre
+ temprature readouts for all four tyres on the car. The individual tyre temprature readouts are coloured based on cold/hot threshold values
+ fed into the funciton.
+ @param input_x x value for top left of widget
+ @param input_y y value for top left of widget
+ @param img_handle bitmap hadnle for the image we want to render in the widget
+ @param cold_threshold variable cold tyre threshold 
+ @param hot_threshold  variable hot tyre threshold 
+ @param left_front current left front tyre temprature variable 
+ @param left_rear current left rear tyre temprature variable 
+ @param right_front current right front tyre temprature variable 
+ @param right_rear current right rear tyre temprature variable 
+ */
 void tyreTemps(uint16_t input_x, uint16_t input_y, uint8_t img_handle, uint8_t cold_threshold, uint8_t hot_threshold, uint8_t left_front, uint8_t left_rear, uint8_t right_front, uint8_t right_rear){
 
     //total width 200, height 90
@@ -2270,13 +2525,11 @@ void tyreTemps(uint16_t input_x, uint16_t input_y, uint8_t img_handle, uint8_t c
     // save graphics context
     EVE_SAVE_CONTEXT();
 
-    // widget outline shape
-    EVE_BEGIN(EVE_BEGIN_RECTS);
-    EVE_COLOR_RGB(0, 0, 0); // black
-    EVE_COLOR_A(120);
+    // draw background box
+    backgroundBox(input_x, input_y, 200, 90, 4);
+
+    // set desried line width
     EVE_LINE_WIDTH(80); // 5
-    EVE_VERTEX2F((input_x + 5) * 16, (input_y + 5) * 16);
-    EVE_VERTEX2F((input_x + 195) * 16, (input_y + 85) * 16);
 
     // individual tyre temp boxes
     EVE_COLOR_A(150);
@@ -2360,6 +2613,20 @@ void tyreTemps(uint16_t input_x, uint16_t input_y, uint8_t img_handle, uint8_t c
     EVE_RESTORE_CONTEXT();
 }
 
+/**
+ @brief Function to render a sector widget on the screen. This function will render a circle created and coloured using alpha blending, where
+ the circle will fill as the 'arc_user_value' variable increases. It will also denoted the sector thresholds within the circle and print the current
+ sector number.
+ @param centerx x value for center of widget
+ @param centerx y value for center of widget
+ @param radius radius of the circles outer edge will align to 
+ @param thickness this value - 'radius' determines the inner circle radius for the inside edge
+ @param font_handle  font handle used in the text printout for the current sector number
+ @param sector_one_end angle representing the end of sector one on the circle (0 degrees is the bottom of the circle)
+ @param sector_two_end angle representing the end of sector two on the circle (0 degrees is the bottom of the circle)
+ @param current_sector varible to denote current sector number for readout
+ @param arc_user_value value input to determine the position of the current reading fill on the circle
+ */
 void sectorWidget(uint16_t center_x, uint16_t center_y, uint16_t radius, uint16_t thickness, uint8_t font_handle, uint16_t sector_one_end, uint16_t sector_two_end, uint8_t current_sector, uint16_t arc_value_user)
 {
     // Varibles for use in function
@@ -2367,6 +2634,7 @@ void sectorWidget(uint16_t center_x, uint16_t center_y, uint16_t radius, uint16_
     uint16_t arc_max_limit = 360;
     uint16_t arc_value = arc_value_user;
 
+    // variables for positioning of components within the circle 
     int16_t arc_active_x = 0;
     int16_t arc_active_y = 0;
 
@@ -2413,23 +2681,18 @@ void sectorWidget(uint16_t center_x, uint16_t center_y, uint16_t radius, uint16_
     EVE_SAVE_CONTEXT();
 
     // stencil the area of the widget
-    EVE_SCISSOR_SIZE(((radius * 2) + 12), ((radius * 2) + 12)); // + 2 * line width of background box
-    EVE_SCISSOR_XY(((center_x - radius) - 6), ((center_y - radius) - 6)); // top left (shift due to line width of background box)
+    EVE_SCISSOR_SIZE(((radius * 2) + 16), ((radius * 2) + 16)); // + 4 * line width of background box plues 1
+    EVE_SCISSOR_XY(((center_x - radius) - 8), ((center_y - radius) - 8)); // top left (shift due to line width of background box)
 
     // draw background box
-    EVE_COLOR_RGB(0,0,0);
-    EVE_LINE_WIDTH(80); //5
-    EVE_BEGIN(EVE_BEGIN_RECTS);
-    EVE_COLOR_A(120);
-    EVE_VERTEX2F(((center_x - radius) *16), ((center_y + radius) * 16)); // plus the line width used above
-    EVE_VERTEX2F(((center_x + radius) *16), ((center_y - radius) * 16)); // minus the line width used above
-    
+    // position based off of radius, center, and box_width, size w/h  +  4* line width of background
+    backgroundBox((center_x - radius - 8), (center_y - radius - 8), ((radius * 2) + 15), ((radius * 2) + 15), 4);
 
     // firstly we want ot paint the fill and outline shapes into the alpah buffer, and use one stencil
     // disable all colours bar the alpha channel
     EVE_COLOR_MASK(0, 0, 0, 1);
     // clear stencil and colour
-    EVE_CLEAR(1,1,0);
+    EVE_CLEAR(1 ,1 ,0);
 
     // we want to add the fill into the alpha buffer
     EVE_BLEND_FUNC(EVE_BLEND_ONE, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
@@ -2628,6 +2891,18 @@ void sectorWidget(uint16_t center_x, uint16_t center_y, uint16_t radius, uint16_
     EVE_RESTORE_CONTEXT();
 }
 
+/**
+ @brief Function to render a lap and sector times widget on the screen. This function will render the current overall laptime, along with times for sectors
+ one and two in the lap, these printouts will be coloured based on the input colour variables respectively. The sector times will only be printed 
+ when a vaild time is for each respectively is fed into the function.
+ @param input_x x value for top left of widget
+ @param input_y y value for top left of widget
+ @param color_sector_1 input colour for the sector 1 readout
+ @param color_sector_2 input colour for the sector 2 readout
+ @param sector_time_1 current section 1 time variable 
+ @param sector_time_2 current section 2 time variable 
+ @param laptime current total laptime variable.
+ */
 void lapAndSectorTimes(uint16_t input_x, uint16_t input_y, uint32_t color_sector_1, uint32_t color_sector_2, uint32_t sector_time_1, uint32_t sector_time_2, uint32_t laptime){
 
     //total width 200, height 90
@@ -2652,13 +2927,11 @@ void lapAndSectorTimes(uint16_t input_x, uint16_t input_y, uint32_t color_sector
     // save context
     EVE_SAVE_CONTEXT();
 
-    // draw outline box
-    EVE_BEGIN(EVE_BEGIN_RECTS);
-    EVE_COLOR_RGB(0, 0, 0); // black
-    EVE_COLOR_A(120);
+    // draw background box
+    backgroundBox(input_x, input_y, 200, 90, 4);
+
+    // set desired line width
     EVE_LINE_WIDTH(80); // 5
-    EVE_VERTEX2F((input_x + 5) * 16, (input_y + 5) * 16);
-    EVE_VERTEX2F((input_x + 195) * 16, (input_y + 85) * 16);
 
     // draw some boxes that will be used to indicate sector time positive or negative deltas
     // if we dont currentl have a time, just draw a normal shadow box
@@ -2783,6 +3056,16 @@ void lapAndSectorTimes(uint16_t input_x, uint16_t input_y, uint32_t color_sector
 
 }
 
+/**
+ @brief Function to render a battery indicator widget on the screen. This function will render a bitmap on screen, where the bitmap consists
+ of multiple cells indicating differing battery percentages. Which cell is rendered is determined by the input 'value' varible.
+ to denote the max/min elevations.
+ @param input_x x value for top left of widget
+ @param input_y y value for top left of widget
+ @param img_handle bitmap hadnle for the image we want to render in the widget
+ @param color input colour we wish to use to colour the bitmap
+ @param value current battery level value (used to pick a bitmap cell to render)
+ */
 void batteryIndicator(uint16_t input_x, uint16_t input_y, uint8_t img_handle, uint32_t color, uint8_t value){
 
     //total width 90, height 90
@@ -2791,13 +3074,8 @@ void batteryIndicator(uint16_t input_x, uint16_t input_y, uint8_t img_handle, ui
     // save graphics context
     EVE_SAVE_CONTEXT();
 
-    // draw outline
-    EVE_BEGIN(EVE_BEGIN_RECTS);
-    EVE_COLOR_RGB(0, 0, 0); // black
-    EVE_COLOR_A(120);
-    EVE_LINE_WIDTH(80); // 5
-    EVE_VERTEX2F((input_x + 5) * 16, (input_y + 5) * 16);
-    EVE_VERTEX2F((input_x + 85) * 16, (input_y + 85) * 16);
+    // draw background box
+    backgroundBox(input_x, input_y, 90, 90, 4);
 
     // draw battery 
     // if the battery isnt full, then we can also draw a shadow of the full battery behind the bitmpap cell we wish to display
@@ -2841,6 +3119,10 @@ void batteryIndicator(uint16_t input_x, uint16_t input_y, uint8_t img_handle, ui
 
 }
 
+/**
+ @brief Function to configure bitmaps for use in the applicaiton. This fucntion constructs a display list with BITMAP_HANDLE and 
+ CMD_SETBITMAP calls to configure the bitmaps used in the application, and sends this display list to EVE.
+ */
 void configure_bitmaps(void){
 
     EVE_LIB_BeginCoProList();
@@ -2920,6 +3202,11 @@ void configure_bitmaps(void){
 // #######################################################                           Main display loop code                           ###################################################################
 // ######################################################################################################################################################################################################
 
+/**
+ @brief Function to send display lists to EVE within a while(1) 'main' loop. This fucntion constructs a display list to render screens to EVE
+ within a while (1) loop, calling funcitons to add widgets onto the screen. It also contains the data arrays and variables used to update 
+ readouts and widgets on the screen. Finally it will perfrom some logic to loop through applicable data arrays or change variables.
+ */
 void eve_display(void)
 {
 
@@ -3024,7 +3311,7 @@ void eve_display(void)
 
         EVE_LIB_BeginCoProList();
         EVE_CMD_DLSTART();
-        EVE_CLEAR_COLOR_RGB(0, 0, 0);
+        EVE_CLEAR_COLOR_RGB(31, 62, 127);
         EVE_CLEAR(1, 1, 1);
 
         // Draw background image and bottom bar 
@@ -3032,7 +3319,7 @@ void eve_display(void)
 
         EVE_BEGIN(EVE_BEGIN_BITMAPS);
         // We want to darken this image slightly, so we use a COLOR_RGB command here to do this.
-        EVE_COLOR_RGB(80, 80, 140); // slight purple tint
+        EVE_COLOR_RGB(100, 100, 175); // slight purple tint
         // Draw the background image if it can be drawn.
         EVE_BITMAP_HANDLE(Carbon_Fiber_800x480_asset.Handle);
         // Place BG carbon fiber at 0,0
@@ -3051,7 +3338,7 @@ void eve_display(void)
         //----------------------------------------------------------------   
 
         // Draw acceleration data
-        tractionCircle(14,14, (array_max-1), count, accX, accY);
+        tractionCircle(14, 14, (array_max-1), count, accX, accY);
 
         // Draw Oil temp warning light (cell 0 in the bitmap so 0 is passed into the function after the bitmap properties)
         iconIndicator(160, 100, &Oil_Water_Icons_32x64_asset, 0, 0xEE0000, oilWarning);
@@ -3158,7 +3445,7 @@ void eve_display(void)
         tyreTemps(135, 380, Car_Overhead_44x80_asset.Handle, 94, 96, left_front, left_rear, right_front, right_rear);
 
         // Print sector gauge
-        sectorWidget(400, 425, 40, 10, 30, ((sector_thresholds[0]*360)/distance[array_max-1]), ((sector_thresholds[1]*360)/distance[array_max-1]), current_sector, ((distance[count]*360)/distance[array_max-1]));
+        sectorWidget(400, 425, 38, 10, 30, ((sector_thresholds[0]*360)/distance[array_max-1]), ((sector_thresholds[1]*360)/distance[array_max-1]), current_sector, ((distance[count]*360)/distance[array_max-1]));
 
         // Print lap and sector times
         // This function can take a colour to print for sector times delta indication, but as we are only using one lap of data we will send RED for sector 1 and Green for sector 2
@@ -3350,6 +3637,11 @@ void eve_display(void)
 // #######################################################                        Application Code begins here                        ###################################################################
 // ######################################################################################################################################################################################################
 
+/**
+ @brief Function to start the EVE applicaiton, called from main.c. This funciton will call seperate funcitons to initailize EVE, ensure the attached flash
+ can enter FAST mode, set asset properties, and load assets from flash to EVEs RAM_G. Finally it will call eve_display() to run the main display loop and 
+ update the screen. 
+ */
 void eve_example(void)
 {
 
