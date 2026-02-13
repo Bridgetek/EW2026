@@ -67,7 +67,7 @@ include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${API_DIRECTORY}/include
         ${EXAMPLE_SOURCE}
-	${EXAMPLE_SNIPPETS}/trig_furman
+	${EXAMPLE_SNIPPETS}/maths
 )
 
 # Modify the below lines to enable/disable output over UART/USB
@@ -98,7 +98,7 @@ target_include_directories(eve_library PUBLIC
 add_library(eve_example # Example code library name
         # Source files for example code library
         ${EXAMPLE_SOURCE}/eve_example.c
-        ${EXAMPLE_SNIPPETS}/trig_furman/trig_furman.c
+        ${EXAMPLE_SNIPPETS}/maths/trig_furman.c
 )
  
 # Header files used for example code library
@@ -106,7 +106,7 @@ target_include_directories(eve_example PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${API_DIRECTORY}/include # Headers for EVE library
         ${EXAMPLE_COMMON}/ # Headers for example code
-        ${EXAMPLE_SNIPPETS}/trig_furman # Headers for snippets
+        ${EXAMPLE_SNIPPETS}/maths # Headers for snippets
 )
 
 # Example code dependencies

@@ -88,10 +88,8 @@ uint32_t platform_get_time(void)
 void setup(void)
 {
 
-#ifdef DEBUG
     // Initialise stdio ports as configured in CMakeLists.txt
     stdio_init_all();
-#endif
 
     // Turn on the pico LED to show activity
     const uint LED_PIN = PICO_DEFAULT_LED_PIN;

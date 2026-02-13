@@ -12,4 +12,3 @@ In addition to runable demo code there are libraries of widgets and utilities th
 
 Many of the examples load code or modules from this directory. 
 
-TODO: this directory will be split into widgets and utilities.
