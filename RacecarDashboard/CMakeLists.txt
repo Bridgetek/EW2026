@@ -67,7 +67,7 @@ include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${API_DIRECTORY}/include
         ${EXAMPLE_SOURCE}
-	${EXAMPLE_SNIPPETS}/maths
+		${EXAMPLE_SNIPPETS}/maths
 )
 
 # Modify the below lines to enable/disable output over UART/USB
@@ -105,7 +105,7 @@ add_library(eve_example # Example code library name
 target_include_directories(eve_example PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${API_DIRECTORY}/include # Headers for EVE library
-        ${EXAMPLE_COMMON}/ # Headers for example code
+        ${EXAMPLE_SOURCE}/ # Headers for example code
         ${EXAMPLE_SNIPPETS}/maths # Headers for snippets
 )
 
@@ -131,3 +131,4 @@ target_link_libraries(eve_library
         )
 
 pico_add_extra_outputs(${ProjectName})
+
