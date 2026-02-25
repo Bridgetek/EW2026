@@ -14,9 +14,9 @@ The example is intended to show a reimaginged dashboard for a racecar. External 
 
 Graphics assets are stored in the attached EVE device Flash. Images are conveterd and stored as ASTC compressed images.
 
-**NOTE:** The Flash must be preprogrammed before using the example to the IDM2040-7A module using the [EVE Asset Builder](https://brtchip.com/eab/) toolchain, the `flash-817-racecar.bin` file required is located in [flash](assets/flash).
+**NOTE:** The Flash must be preprogrammed before using the example to the IDM2040-7A module using the [EVE Asset Builder](https://brtchip.com/eab/) toolchain, the `flash-817-racecar.bin` file required is located in [/assets/flash](assets/flash).
 
-A precompiled .uf2 file to program the IDM2040-7A can be found in [build](pico/build).
+A precompiled .uf2 file to program the IDM2040-7A can be found in [/build](build).
 
 This example supports the following platforms:
 
@@ -127,6 +127,3 @@ Recommended future improvments to this demo include:
 
    * Including support to program `flash-817-racecar.bin` to on-board flash via application code
         + Prerequisites: fatFS support library
-
-
-

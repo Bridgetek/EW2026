@@ -1,0 +1,30 @@
+{
+  "eab_version": "4.2",
+  "chip_gen": "Pre82x",
+  "input_name": "Fredoka-SemiBold.ttf",
+  "output_name": [
+    "Fredoka-SemiBold_90_L4.raw"
+  ],
+  "output_size": [
+    17308
+  ],
+  "type": "legacy font",
+  "format": "L4",
+  "compressed": "no",
+  "font_size": 90,
+  "base_line": 48,
+  "caps_height": 48,
+  "mid_line": 48,
+  "x_width": 62,
+  "x_offset": 0,
+  "first_character": 48,
+  "memory_location": "RAM_G",
+  "offset": 0,
+  "eve_command": "cmd_setfont2",
+  "font_width": 52,
+  "font_height": 66,
+  "font_stride": 26,
+  "code_point_mode": "ordinal",
+  "input_chars": "0,1,2,3,4,5,6,7,8,9",
+  "converted_chars": "0,1,2,3,4,5,6,7,8,9"
+}

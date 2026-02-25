@@ -1,0 +1,12 @@
+{
+  "eab version": "2.12.2",
+  "input name": "finger.png",
+  "output name": "finger_90x90_L8.raw",
+  "output size": 8100,
+  "type": "bitmap",
+  "format": "L8",
+  "compressed": "no",
+  "width": 90,
+  "height": 90,
+  "stride": 90
+}

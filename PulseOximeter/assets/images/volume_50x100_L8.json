@@ -1,0 +1,12 @@
+{
+  "eab version": "2.12.2",
+  "input name": "volume.png",
+  "output name": "volume_50x100_L8.raw",
+  "output size": 5000,
+  "type": "bitmap",
+  "format": "L8",
+  "compressed": "no",
+  "width": 50,
+  "height": 100,
+  "stride": 50
+}

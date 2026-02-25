@@ -1,0 +1,12 @@
+{
+  "eab version": "2.12.2",
+  "input name": "rotate.png",
+  "output name": "rotate_50x50_L8.raw",
+  "output size": 2500,
+  "type": "bitmap",
+  "format": "L8",
+  "compressed": "no",
+  "width": 50,
+  "height": 50,
+  "stride": 50
+}

@@ -1,0 +1,12 @@
+{
+  "eab version": "2.12.2",
+  "input name": "graph.png",
+  "output name": "graph_16x16_L8.raw",
+  "output size": 256,
+  "type": "bitmap",
+  "format": "L8",
+  "compressed": "no",
+  "width": 16,
+  "height": 16,
+  "stride": 16
+}

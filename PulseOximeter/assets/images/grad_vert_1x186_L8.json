@@ -1,0 +1,12 @@
+{
+  "eab version": "2.12.2",
+  "input name": "grad_vert.png",
+  "output name": "grad_vert_1x186_L8.raw",
+  "output size": 186,
+  "type": "bitmap",
+  "format": "L8",
+  "compressed": "no",
+  "width": 1,
+  "height": 186,
+  "stride": 1
+}

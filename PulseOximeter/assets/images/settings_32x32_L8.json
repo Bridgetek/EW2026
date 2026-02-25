@@ -1,0 +1,12 @@
+{
+  "eab version": "2.12.2",
+  "input name": "settings.png",
+  "output name": "settings_32x32_L8.raw",
+  "output size": 1024,
+  "type": "bitmap",
+  "format": "L8",
+  "compressed": "no",
+  "width": 32,
+  "height": 32,
+  "stride": 32
+}

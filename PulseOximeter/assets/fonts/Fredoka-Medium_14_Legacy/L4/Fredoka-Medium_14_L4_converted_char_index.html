@@ -1,0 +1,111 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+@font-face {
+    font-family: "user_font";
+    src: url("C:/Users/aaron.jones/Desktop/Eve-MCU-Dev-development/examples/pulseOx/assets/source/Fredoka-Medium.ttf");
+}
+
+.eab_font {
+  font-family: "user_font";
+  font-size: 30px;
+  color: #34568B;
+  background-color: #f0f0f0;
+  padding: 8px;
+
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;           /* important for flex/grid children */
+
+  white-space: normal;
+  overflow-wrap: anywhere;  /* try to allow breaks */
+  word-break: break-all;    /* most aggressive CSS break */
+  line-break: anywhere;     /* helps for CJK-like line breaking */
+}
+
+#converted_chars_tbl {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 50%;
+}
+
+#converted_chars_tbl td, #converted_chars_tbl th {
+  border: 1px solid #ddd;  
+  padding: 5px;
+  padding-left: 10px;
+}
+
+#converted_chars_tbl tr:nth-child(even){background-color: #f2f2f2;}
+
+#converted_chars_tbl tr:hover {background-color: coral;}
+
+#converted_chars_tbl th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #04AA6D;
+  color: white;
+}
+
+#converted_chars_tbl tr td:first-child {
+  font: 25px user_font;
+  color: #34568B;
+}
+
+td.font_non_print {
+    font-family: Arial, sans-serif !important;
+	font-size: 16px !important;
+	color: red !important;
+}
+
+.stick {
+  position: sticky;
+  top: 0px;
+}
+
+.header {
+  background-color: #f2f2f2;
+  padding-top: 5px;
+  padding-bottom: 16px;
+}
+
+</style>
+</head>
+
+<body>
+<div class="header">
+<p style="font-family: Arial, sans-serif; font-size:18px">95 characters are converted:</p>
+<div class="eab_font" id="wrap_text">
+&nbsp;!"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
+</div>
+</div>
+
+<script>
+// add <wbr> between chars to allow wrapping
+const el = document.getElementById('wrap_text');
+const txt = el.textContent || '';
+el.dataset.originalText = txt;
+el.innerHTML = Array.from(txt).map(ch => (ch === ' ' ? ' ' : ch + '<wbr>')).join('');
+</script>
+
+<br>
+
+<table id="converted_chars_tbl">
+<thead class = "stick">
+  <tr>
+    <th>Character</th>
+    <th>Index (Decimal)</th>
+    <th>Index (Hexa)</th>
+  </tr>
+</thead>
+
+<tbody> 
+<tr><td class="font_non_print" >&#60;space&#62;</td><td>32</td><td>0x20</td></tr><tr><td  >!</td><td>33</td><td>0x21</td></tr><tr><td  >"</td><td>34</td><td>0x22</td></tr><tr><td  >#</td><td>35</td><td>0x23</td></tr><tr><td  >$</td><td>36</td><td>0x24</td></tr><tr><td  >%</td><td>37</td><td>0x25</td></tr><tr><td  >&</td><td>38</td><td>0x26</td></tr><tr><td  >'</td><td>39</td><td>0x27</td></tr><tr><td  >(</td><td>40</td><td>0x28</td></tr><tr><td  >)</td><td>41</td><td>0x29</td></tr><tr><td  >*</td><td>42</td><td>0x2A</td></tr><tr><td  >+</td><td>43</td><td>0x2B</td></tr><tr><td  >,</td><td>44</td><td>0x2C</td></tr><tr><td  >-</td><td>45</td><td>0x2D</td></tr><tr><td  >.</td><td>46</td><td>0x2E</td></tr><tr><td  >/</td><td>47</td><td>0x2F</td></tr><tr><td  >0</td><td>48</td><td>0x30</td></tr><tr><td  >1</td><td>49</td><td>0x31</td></tr><tr><td  >2</td><td>50</td><td>0x32</td></tr><tr><td  >3</td><td>51</td><td>0x33</td></tr><tr><td  >4</td><td>52</td><td>0x34</td></tr><tr><td  >5</td><td>53</td><td>0x35</td></tr><tr><td  >6</td><td>54</td><td>0x36</td></tr><tr><td  >7</td><td>55</td><td>0x37</td></tr><tr><td  >8</td><td>56</td><td>0x38</td></tr><tr><td  >9</td><td>57</td><td>0x39</td></tr><tr><td  >:</td><td>58</td><td>0x3A</td></tr><tr><td  >;</td><td>59</td><td>0x3B</td></tr><tr><td  ><</td><td>60</td><td>0x3C</td></tr><tr><td  >=</td><td>61</td><td>0x3D</td></tr><tr><td  >></td><td>62</td><td>0x3E</td></tr><tr><td  >?</td><td>63</td><td>0x3F</td></tr><tr><td  >@</td><td>64</td><td>0x40</td></tr><tr><td  >A</td><td>65</td><td>0x41</td></tr><tr><td  >B</td><td>66</td><td>0x42</td></tr><tr><td  >C</td><td>67</td><td>0x43</td></tr><tr><td  >D</td><td>68</td><td>0x44</td></tr><tr><td  >E</td><td>69</td><td>0x45</td></tr><tr><td  >F</td><td>70</td><td>0x46</td></tr><tr><td  >G</td><td>71</td><td>0x47</td></tr><tr><td  >H</td><td>72</td><td>0x48</td></tr><tr><td  >I</td><td>73</td><td>0x49</td></tr><tr><td  >J</td><td>74</td><td>0x4A</td></tr><tr><td  >K</td><td>75</td><td>0x4B</td></tr><tr><td  >L</td><td>76</td><td>0x4C</td></tr><tr><td  >M</td><td>77</td><td>0x4D</td></tr><tr><td  >N</td><td>78</td><td>0x4E</td></tr><tr><td  >O</td><td>79</td><td>0x4F</td></tr><tr><td  >P</td><td>80</td><td>0x50</td></tr><tr><td  >Q</td><td>81</td><td>0x51</td></tr><tr><td  >R</td><td>82</td><td>0x52</td></tr><tr><td  >S</td><td>83</td><td>0x53</td></tr><tr><td  >T</td><td>84</td><td>0x54</td></tr><tr><td  >U</td><td>85</td><td>0x55</td></tr><tr><td  >V</td><td>86</td><td>0x56</td></tr><tr><td  >W</td><td>87</td><td>0x57</td></tr><tr><td  >X</td><td>88</td><td>0x58</td></tr><tr><td  >Y</td><td>89</td><td>0x59</td></tr><tr><td  >Z</td><td>90</td><td>0x5A</td></tr><tr><td  >[</td><td>91</td><td>0x5B</td></tr><tr><td  >\</td><td>92</td><td>0x5C</td></tr><tr><td  >]</td><td>93</td><td>0x5D</td></tr><tr><td  >^</td><td>94</td><td>0x5E</td></tr><tr><td  >_</td><td>95</td><td>0x5F</td></tr><tr><td  >`</td><td>96</td><td>0x60</td></tr><tr><td  >a</td><td>97</td><td>0x61</td></tr><tr><td  >b</td><td>98</td><td>0x62</td></tr><tr><td  >c</td><td>99</td><td>0x63</td></tr><tr><td  >d</td><td>100</td><td>0x64</td></tr><tr><td  >e</td><td>101</td><td>0x65</td></tr><tr><td  >f</td><td>102</td><td>0x66</td></tr><tr><td  >g</td><td>103</td><td>0x67</td></tr><tr><td  >h</td><td>104</td><td>0x68</td></tr><tr><td  >i</td><td>105</td><td>0x69</td></tr><tr><td  >j</td><td>106</td><td>0x6A</td></tr><tr><td  >k</td><td>107</td><td>0x6B</td></tr><tr><td  >l</td><td>108</td><td>0x6C</td></tr><tr><td  >m</td><td>109</td><td>0x6D</td></tr><tr><td  >n</td><td>110</td><td>0x6E</td></tr><tr><td  >o</td><td>111</td><td>0x6F</td></tr><tr><td  >p</td><td>112</td><td>0x70</td></tr><tr><td  >q</td><td>113</td><td>0x71</td></tr><tr><td  >r</td><td>114</td><td>0x72</td></tr><tr><td  >s</td><td>115</td><td>0x73</td></tr><tr><td  >t</td><td>116</td><td>0x74</td></tr><tr><td  >u</td><td>117</td><td>0x75</td></tr><tr><td  >v</td><td>118</td><td>0x76</td></tr><tr><td  >w</td><td>119</td><td>0x77</td></tr><tr><td  >x</td><td>120</td><td>0x78</td></tr><tr><td  >y</td><td>121</td><td>0x79</td></tr><tr><td  >z</td><td>122</td><td>0x7A</td></tr><tr><td  >{</td><td>123</td><td>0x7B</td></tr><tr><td  >|</td><td>124</td><td>0x7C</td></tr><tr><td  >}</td><td>125</td><td>0x7D</td></tr><tr><td  >~</td><td>126</td><td>0x7E</td></tr> 
+</tbody>   
+</table>
+</body>
+</html>

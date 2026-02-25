@@ -1,0 +1,30 @@
+{
+  "eab_version": "4.2",
+  "chip_gen": "Pre82x",
+  "input_name": "Fredoka-Medium.ttf",
+  "output_name": [
+    "Fredoka-Medium_28_L4.raw"
+  ],
+  "output_size": [
+    38718
+  ],
+  "type": "legacy font",
+  "format": "L4",
+  "compressed": "no",
+  "font_size": 28,
+  "base_line": 15,
+  "caps_height": 15,
+  "mid_line": 15,
+  "x_width": 19,
+  "x_offset": 0,
+  "first_character": 32,
+  "memory_location": "RAM_G",
+  "offset": 0,
+  "eve_command": "cmd_setfont2",
+  "font_width": 28,
+  "font_height": 29,
+  "font_stride": 14,
+  "code_point_mode": "ordinal",
+  "input_chars": " ,!,\",#,$,%,&,',(,),*,+,,,-,.,/,0,1,2,3,4,5,6,7,8,9,:,;,<,=,>,?,@,A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,[,\\,],^,_,`,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,{,|,},~",
+  "converted_chars": " ,!,\",#,$,%,&,',(,),*,+,,,-,.,/,0,1,2,3,4,5,6,7,8,9,:,;,<,=,>,?,@,A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,[,\\,],^,_,`,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,{,|,},~"
+}

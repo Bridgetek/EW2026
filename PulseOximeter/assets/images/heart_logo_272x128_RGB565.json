@@ -1,0 +1,12 @@
+{
+  "eab version": "2.12.2",
+  "input name": "heart_logo.png",
+  "output name": "heart_logo_272x128_RGB565.raw",
+  "output size": 69632,
+  "type": "bitmap",
+  "format": "RGB565",
+  "compressed": "no",
+  "width": 272,
+  "height": 128,
+  "stride": 544
+}
