@@ -10,7 +10,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * http://www.ftdichip.com/FTSourceCodeLicenceTerms.htm ("the Licence Terms").
+ * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -285,7 +285,7 @@
 #define EVE_ENC_VERTEX_FORMAT(frac)         ((0x27ul << 24)|(((frac) & 0x7ul) << 0))
 #define EVE_ENC_VERTEX_TRANSLATE_X(x)       ((0x2bul << 24)|((((uint32_t)(x)) & 0x1FFFFul) << 0))
 #define EVE_ENC_VERTEX_TRANSLATE_Y(y)       ((0x2cul << 24)|((((uint32_t)(y)) & 0x1FFFFul) << 0))
-#define EVE_ENC_VERTEX2F(x,y)               ((0x1ul << 30)|((((uint32_t)(x)) & 0xfffful) << 15)|((((uint32_t)(y)) & 0xfffful) << 0))
+#define EVE_ENC_VERTEX2F(x,y)               ((0x1ul << 30)|((((uint32_t)(x)) & 0x7ffful) << 15)|((((uint32_t)(y)) & 0x7ffful) << 0))
 #define EVE_ENC_VERTEX2II(x,y,handle,cell)  ((0x2ul << 30)|((((uint32_t)(x)) & 0x1fful) << 21)|((((uint32_t)(y)) & 0x1fful) << 12)|(((handle) & 0x1ful) << 7)|(((cell) & 0x7ful) << 0))
 
 // Co-processor Commands

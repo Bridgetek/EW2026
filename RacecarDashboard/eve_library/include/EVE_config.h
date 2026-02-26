@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * http://www.ftdichip.com/FTSourceCodeLicenceTerms.htm ("the Licence Terms").
+ * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -91,7 +91,7 @@
 #define DP_0351_11A 0351   // DP-0351-11A QVGA (Resistive)
 #define DP_0431_11A 0431   // DP-0431-11A WQVGA (Resistive)
 #define DP_0501_01A 050101 // DP-0501-01A WVGA (Capacitive)
-#define DP_0501_11A 050111 // DP-0351-11A WVGA (Resistive)
+#define DP_0501_11A 050111 // DP-0501-11A WVGA (Resistive)
 #define DP_0502_11A 0502   // DP-0502-11A WQVGA (Resistive)
 #define DP_0701_11A 0701   // DP-0701-11A WVGA (Capacitive)
 #define DP_1012_01A 1012   // DP-1012-01A WUXGA (Capacitive)
@@ -223,7 +223,7 @@
  */
 //@{
 #ifndef DISPLAY_RES
-#define DISPLAY_RES FULLHD
+#define DISPLAY_RES WUXGA
 #endif
 //@}
 
