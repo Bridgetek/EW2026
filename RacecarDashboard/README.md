@@ -8,15 +8,15 @@
 
 The `racecar dashboard` example demonstrates drawing a multi-function dashboard for a racing car.
 
-A racecar dashboard is drawn using bitmaps, blending, scissoring, arcs and custom fonts. The `racecar` code uses the `furman` snippet from the [snippets](eve_library/examples/snippets) directory to calculate angles using furman trigonometry. Furman angles are an implementation of angles using only integer values to enable this demo to run on hardware which does not support floating point values. Refer to the BridgeTek Programming Guides for the EVE device for a full explanation of this method.
+A racecar dashboard is drawn using bitmaps, blending, scissoring, arcs and custom fonts. The `racecar` code uses the `furman` snippet from the [snippets/maths](eve_library/examples/snippets/maths) directory to calculate angles using furman trigonometry. Furman angles are an implementation of angles using only integer values to enable this demo to run on hardware which does not support floating point values. Refer to the BridgeTek Programming Guides for the EVE device for a full explanation of this method.
 
 The example is intended to show a reimaginged dashboard for a racecar. External inputs would provide the data for the vehicle speed, engine RPM, acceleration, braking, track position, battery charge status and gear selection. This data is precomputed and stored in arrays in the program.
 
 Graphics assets are stored in the attached EVE device Flash. Images are conveterd and stored as ASTC compressed images.
 
-**NOTE:** The Flash must be preprogrammed before using the example to the IDM2040-7A module using the [EVE Asset Builder](https://brtchip.com/eab/) toolchain, the `flash-817-racecar.bin` file required is located in [/assets/flash](assets/flash).
+**NOTE:** The Flash must be pre-programmed before using the example on the IDM2040-7A module using the [EVE Asset Builder](https://brtchip.com/eab/) toolchain, the `flash-817-racecar.bin` file required is located in the [/assets/flash](assets/flash) folder.
 
-A precompiled .uf2 file to program the IDM2040-7A can be found in [/build](build).
+A precompiled .uf2 file to program the IDM2040-7A with the example can be found in the [/build](build) folder.
 
 This example supports the following platforms:
 
