@@ -11,9 +11,11 @@ A medinfo dashboard is drawn using graphing, bitmap scaling and simple animation
 The example is intended to show an imagined medical patient monitor. In real life external inputs would provide the data for the display. This data is precomputed and stored in arrays in the program.
 
 Graphics assets are stored in 4 different ways:
-1  In the EVE device Flash. Images are stored as PNG images. The Flash must be preprogrammed before using the example.
-2  From an image of the Flash on the host PC file system. This method is not suitable for embedded applications where there is no file system.
-3  From discreet C files on the host PC file system. This method is not suitable for embedded applications where there is no file system.
+1) In the EVE device Flash. Images are stored as PNG images. The Flash must be preprogrammed before using the example.
+2) From an image of the Flash on the host PC file system. This method is not suitable for embedded applications where there is no file system.
+3) From discreet C files on the host PC file system. This method is not suitable for embedded applications where there is no file system.
+4) With C arrays containing the assets. This works with any application that can store and access the required arrays in program memory.
+
 ## Screenshot
 
 The following is an screenshot of the medinfo example.
@@ -28,21 +30,21 @@ The asset storage method is set in the file `eve_example.h` file in the `ASSETS`
 
 ### `USE_FLASH` 
 
-Assets are stored in the EVE device Flash. Different Flash images for BT815/6, BT817/8 and BT82x are required. Images assets are stored in ASTC compressed format. The Flash must be preprogrammed before using the example code. There are multiple versions of the flash image (both used in `USE_FLASH` and `USE_FLASHIMAGE`) since the ASTC compressed images differ between BT82x and BT81x. The BT81x versions do not require the extension patch asset for BT82x either.
+Assets are stored in the EVE device Flash. The Flash image is for BT82x. Images assets are stored in PNG compressed format. The Flash must be preprogrammed before using the example code. There flash image is used for both used in `USE_FLASH` and `USE_FLASHIMAGE`. The flash image also includes the extension patch asset for BT82x.
 
 #### Setup
 
-The addresses of the various assets in the flash image must be modified if the flash image is recreated or modified. To do this a python script called `flashmap.py` is provided in the `assets` directory. This will modify code associated with markers in the source code files to match the flash image. There is a `.bin` file and a `.map` file created by EVE Asset Builder (EAB) when a flash image is created. The script takes the data for the assets from the `.map` file and modifies one of the `common/eve_assetload_flash_eve*.c` files. 
+The addresses of the various assets in the flash image must be modified if the flash image is recreated or modified. To do this a python script called `flashmap.py` is provided in the `assets` directory. This will modify code associated with markers in the source code files to match the flash image. There is a `.bin` file and a `.map` file created by EVE Asset Builder (EAB) when a flash image is created. The script takes the data for the assets from the `.map` file and modifies the `example/eve_assetload_flash.c` files. 
 
-For example, to update the flash image pointers for a BT817/8 (EVE4) the script on Windows from the `assets` directory is run as follows:
+For example, to update the flash image pointers for a BT820 (EVE5) the script on Windows from the `assets` directory is run as follows:
 ```
-python flashmap.py eve4\flash-817-default.map ..\common\eve_assetload_flash_eve4.c
+python flashmap.py flash-820-default.map ..\example\eve_assetload_flash.c
 ```
-The map file for the flash image is `assets\eve4\flash-817-default.map` and the C file to update is `common\eve_assetload_flash_eve4.c`. Relative paths from the `assets` directory are shown.
+The map file for the flash image is `assets\flash-820-default.map` and the C file to update is `example\eve_assetload_flash.c`. Relative paths from the `assets` directory are shown.
 
 The script confirms the update with the output:
 ```
-Setting map offsets and sizes from "eve4\flash-817-default.map" to "..\common\eve_assetload_flash_eve4.c"
+Setting map offsets and sizes from "flash-820-default.map" to "..\example\eve_assetload_flash.c"
 ```
 The example program will expect assets loaded from the EVE device flash to be at the addresses in the `.map` file. The `.bin` file must be programmed into the EVE device flash.
 
@@ -52,7 +54,7 @@ There are no runtime requirements for the example application.
 
 ### `USE_FLASHIMAGE` 
 
-Assets are loaded from an image of the Flash on the host PC file system. Different Flash images for BT815/6, BT817/8 and BT82x are required. This method is not suitable for embedded applications where there is no file system. This method uses the same flash image file can be programmed into the EVE device Flash.
+Assets are loaded from an image of the Flash on the host PC file system. This method is not suitable for embedded applications where there is no file system. This method uses the same flash image file can be programmed into the EVE device Flash.
 
 #### Setup
 
@@ -93,7 +95,6 @@ This example supports the following platforms:
 | Port Name | Port Directory | Supported |
 | --- | --- | --- |
 |Raspberry Pi Pico | pico | Yes |
-|Generic using libFT4222 | libft4222 | Yes |
 
 ## EVE API Support
 
@@ -126,11 +127,16 @@ The example contains a common directory with several files which comprises all t
 | File/Folder | Description |
 | --- | --- |
 | [README.md](README.md) | This file |
-| [common/eve_example.c](common/eve_example.c) | Example source code file |
-| [snippets/touch.c](../snippets/touch.c) | Calibration and touch detection routines |
-| [common/eve_assetload_array.c](common/eve_assetload_array.c) | Load assets from C arrays - used in `USE_C_ARRAYS` |
-| [common/eve_assetload_file.c](common/eve_assetload_file.c) | Load assets from files - used in `USE_FILES` |
-| [common/eve_assetload_flash.c](common/eve_assetload_flash.c) | Load assets from flash or flash image file - used in `USE_FLASH` and `USE_FLASHIMAGE` |
+| [example/eve_example.c](example/eve_example.c) | Example source code file |
+| [eve_library/examples/snippets/touch.c](../snippets/touch.c) | Calibration and touch detection routines |
+| [eve_library/examples/snippets/widgets/sevenseg.c](eve_library/examples/snippets/widgets/sevenseg.c) | Seven segment display widget |
+| [example/eve_assetload_array.c](example/eve_assetload_array.c) | Load assets from C arrays - used in `USE_C_ARRAYS` |
+| [example/eve_assetload_file.c](example/eve_assetload_file.c) | Load assets from files - used in `USE_FILES` |
+| [example/eve_assetload_flash.c](example/eve_assetload_flash.c) | Load assets from flash or flash image file - used in `USE_FLASH` and `USE_FLASHIMAGE` |
+| [example/eve_tracedata.c](example/eve_tracedata.c) | Data arrays for heartrate, respiration and saturation |
+| [example/eve_graph_extension.c](example/eve_graph_extension.c) | Code to invoke the graph plotting extension |
+| [example/eve_graph_vertexes.c](example/eve_graph_vertexes.c) | Code to draw graphs without the plotting extension |
+| [example/patch_medinfo.c](example/patch_medinfo.c) | Code to call the graph plotting extension |
 | [docs](docs) | Documentation support files |
 | [assets](assets) | Directory for storage of assets |
 | [assets/c_array_assets](assets/c_array_assets) | Directory for arrays of assets |
@@ -192,16 +198,8 @@ This code facilitates loading asset files directly from the file system. When `U
 
 ### `eve_assetload_flash.c`
 
-This file implements both `USE_FLASH` and `USE_FLASHIMAGE` methods. The code can load assets from the flash or from a flash image file. The mapping of the flash may be different for BT815/6, BT817/8 and BT820 so seperate files contain a mapping function. These are `eve_assetload_flash_eve5.c` for BT820, `eve_assetload_flash_eve4.c` for BT817/8 and `eve_assetload_flash_eve3.c` for BT815/6.
+This file implements both `USE_FLASH` and `USE_FLASHIMAGE` methods. The code can load assets from the flash or from a flash image file. These are `eve_assetload_flash.c` for BT820.
 
-### `eve_assetload_flash_eve5.c`
+### `eve_assetload_flash.c`
 
 Flash mapping addresses for BT82x.
-
-### `eve_assetload_flash_eve4.c`
-
-Flash mapping addresses for BT817/8.
-
-### `eve_assetload_flash_eve3.c`
-
-Flash mapping addresses for BT815/6.
