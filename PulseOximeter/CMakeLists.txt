@@ -47,7 +47,6 @@ pico_sdk_init()
 set(API_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/eve_library/")
 
 # Set name of project (as current working directory)
-# Set name of project (as current working directory)
 get_filename_component(ProjectName ${CMAKE_CURRENT_LIST_DIR} NAME)
 string(REPLACE " " "_" ProjectName ${ProjectName})
 project(${ProjectName} C CXX ASM)
@@ -92,7 +91,7 @@ include_directories(
         ${API_DIRECTORY}/include
         ${CMAKE_CURRENT_SOURCE_DIR}/sensor
         ${EXAMPLE_SOURCE}
-	${EXAMPLE_SNIPPETS}/maths
+        ${EXAMPLE_SNIPPETS}/maths
 )
 
 # Tell EVE library to use RP2040 as base class
@@ -140,8 +139,8 @@ add_library(eve_example # Example code library name
         # Source files for example code library
         ${EXAMPLE_SOURCE}/eve_example.c
         ${EXAMPLE_SOURCE}/eve_assets.c
-	${EXAMPLE_SNIPPETS}/touch.c
-	${EXAMPLE_SNIPPETS}/maths/trig_furman.c
+        ${EXAMPLE_SNIPPETS}/touch.c
+        ${EXAMPLE_SNIPPETS}/maths/trig_furman.c
 )
 
 # Header files used for example code library
@@ -150,7 +149,7 @@ target_include_directories(eve_example PUBLIC
         ${API_DIRECTORY}/include # Headers for EVE library
         ${CMAKE_CURRENT_SOURCE_DIR}/sensor
         ${EXAMPLE_SOURCE}/ # Headers for example code
-	${EXAMPLE_SNIPPETS}/ # Headers for snippets
+        ${EXAMPLE_SNIPPETS}/ # Headers for snippets
 )
 # Example code dependencies
 target_link_libraries(eve_example
@@ -172,9 +171,9 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 
 # Add any user requested libraries
 target_link_libraries(eve_library 
-	pico_stdlib
+        pico_stdlib
         hardware_spi
-	hardware_i2c
+        hardware_i2c
         pico_time
         pico_stdio_usb
         )
