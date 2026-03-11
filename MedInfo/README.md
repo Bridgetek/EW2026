@@ -104,7 +104,7 @@ Supported EVE APIs in this example:
 | --- | --- | --- | --- | --- |
 | No | No | No | No | Yes |
 
-The minimum screen size supported is 1920x1080 pixels. The display will fit in larger displays.
+The minimum screen size supported is 1920x1080 pixels. The display will fit in larger displays. The display resolution is changed in the file [EVE_config.h](eve_library/include/EVE_config.h) which is located in the [eve_library/inlcude](eve_library/include/) folder. The `DISPLAY_RES` macro can be changed to `WUXGA` for an 1920x1200 screen or to `FULLHD` for the default 1920x1080 screen.
 
 ## Platform Files and Folders
 
