@@ -8,20 +8,31 @@
 
 The `Pulse Oximeter` example demonstrates the integration of a [SparkFun Pulse Oximeter and Heart Rate Sensor](https://www.sparkfun.com/sparkfun-pulse-oximeter-and-heart-rate-sensor-max30101-max32664-qwiic.html) into a IDM2040-43A based application, drawing a dynamic UI to visulaise sensor readings on screen. The IDM2040-43A combines a [BT883](https://brtchip.com/product/bt883/) Embedded Video Engine, 4.3" capactive touch display, Raspbberry Pi RP2040 MCU, and a variety of I/O connections, making it ideal for prototyping and final applications. 
 
-A pulse oximieter display is drawn using custom bitmaps, blending, custom arc & line graph widgets, and custom fonts. Data to update the display readouts is provided by the readings from the atrtached `SparkFun Pulse Oximeter and Heart Rate Sensor`. A library implementation to read the sensor values over I2C is provided in the [/sensor](sensor) folder, and is based upon the [Sparkffun Library](https://github.com/sparkfun/SparkFun_Pulse_Oximeter_Heart_Rate_Sensor)
+A pulse oximieter display is drawn using custom bitmaps, blending, custom arc & line graph widgets, and custom fonts. Data to update the display readouts is provided by the readings from the atrtached `SparkFun Pulse Oximeter and Heart Rate Sensor`. A library implementation to read the sensor values over I2C is provided in the [/sensor](sensor) folder, and is based upon the [Sparkfun Library](https://github.com/sparkfun/SparkFun_Pulse_Oximeter_Heart_Rate_Sensor)
 
 The `Pulse Oximeter` code uses the `furman` snippet from the [snippets](eve_library/examples/snippets) directory to calculate angles using furman trigonometry. Furman angles are an implementation of angles using only integer values to enable this demo to run on hardware which does not support floating point values. Refer to the BridgeTek Programming Guides for the EVE device for a full explanation of this method.
-
 
 Graphics assets conversions are utilised for custom bitmaps and fonts, these are stored in a C file and loaded into the BT883's graphics memory at the start of the applicaiton.
 
 A precompiled .uf2 file to program the IDM2040-43A can be found in [/build](build).
+
+This example uses the following pin  connections between the IDM2040-43A and the SparkFun Pulse Oximeter and Heart Rate Sensor:
+
+| IDM2040-43A | | Sparkfun Sensor | 
+| --- | --- | --- |
+| CN2 (pin 1) | <-> | GND |
+| CN2 (pin 2) | <-> | 3V3 |
+| CN2 (pin 3) | <-> | SDA |
+| CN2 (pin 4) | <-> | SCL |
+| CN14 (pin 1) | <-> | #RST |
+| CN14 (pin 3) | <-> | MFIO | 
 
 This example supports the following platforms:
 
 | Port Name | Port Directory | Supported |
 | --- | --- | --- |
 | Raspberry Pi Pico | pico | Yes |
+
 
 Supported EVE APIs in this example:
 
