@@ -103,9 +103,9 @@ add_compile_definitions(DEBUG_LEVEL=0)
 # (will also have stdio_usb_connected() call in main to wait for connection)
 add_compile_definitions(PICO_STDIO_USB_CONNECT_WAIT_TIMEOUT_MS=0)
 
-# I2C Pins for CN2 connector on IDM2040-43A SCL=GPIO_17, SDO=GPIO_16
-add_compile_definitions(PICO_DEFAULT_I2C_SCL_PIN=17)
-add_compile_definitions(PICO_DEFAULT_I2C_SDA_PIN=16)
+# I2C Pins for CN2 connector on IDM2040-43A SCL=GPIO_21, SDO=GPIO_20
+add_compile_definitions(PICO_DEFAULT_I2C_SCL_PIN=21)
+add_compile_definitions(PICO_DEFAULT_I2C_SDA_PIN=20)
 # I2C Bus used by SparkFun Bio Sensor Hub 
 add_compile_definitions(SPARKFUN_BIO_SENSOR_HUB_I2C_BUS=i2c0)
 # I2C Address for SparkFun Bio Sensor Hub 7-bit
@@ -185,4 +185,5 @@ add_custom_command(TARGET ${PROJECT_NAME}
     COMMAND arm-none-eabi-size --format=berkeley ${PROJECT_NAME}.elf
     VERBATIM
 )
+
 
