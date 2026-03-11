@@ -119,7 +119,7 @@ add_compile_definitions(SPARKFUN_BIO_SENSOR_HUB_BAUD_RATE=100000)
 
 # Modify the below lines to enable/disable output over USB/UART
 pico_enable_stdio_usb(${PROJECT_NAME} 1)
-pico_enable_stdio_usb(${PROJECT_NAME} 0)
+pico_enable_stdio_uart(${PROJECT_NAME} 0)
 
 # Source code for EVE library (targetted at RP2040)
 add_library(eve_library # EVE library name
