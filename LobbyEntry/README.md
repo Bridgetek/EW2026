@@ -3,7 +3,9 @@
 
 ## 📋 Overview
 
-**Lobby Entry** is a comprehensive demonstration application for the Bridgetek VM820C board, showcasing a complete multimedia communication platform. The application features a multi-page GUI framework with QR code scanning, and dialing and calling interfaces. It demonstrates advanced multimedia capabilities including real-time video streaming, camera integration, gesture-based touch interaction, and graphics rendering on embedded systems.
+**Lobby Entry** is a demonstration application for the Bridgetek VM820C board, showcasing a multimedia communication platform. The application features a multi-page GUI framework with QR code scanning, dialing and calling interfaces. It demonstrates multimedia capabilities including real-time video streaming from both local camera and HDMI video input at the same time, gesture-based touch interaction, and graphics rendering on embedded systems.
+
+<img width="657" height="1067" alt="image" src="https://github.com/user-attachments/assets/0f3f7c9e-f0a6-41ab-98a9-ddb1838bf564" />
 
 ---
 
@@ -51,14 +53,23 @@ A barcode detection system:
 
 ## 🔧 Technical Specifications
 
-### Hardware Requirements
+### Hardware 
 | Component | Specification |
 |-----------|---------------|
-| MCU | STM32H743 |
-| Camera| OV5640 |
-| Display | 1920x1200 |
-| Graphics | VM820C |
-| Storage | MicroSD card (FAT32, 128MB-32GB) |
+| MM4222-QSPI | https://brtchip.com/product/mm4222-qspi/ |
+| WeAct STM32H743VIT6 | https://docs.nordicsemi.com/bundle/ncs-2.9.1/page/zephyr/boards/weact/mini_stm32h743/doc/index.html |
+| RTD2513A V2.0 | HDMI to LVDS converter |
+| LCD 1920x1200 | Portrait mode |
+| VM820C | https://brtchip.com/product/vm820c/ |
+| MicroSD card | 10 MB of storage is sufficient. |
+
+#### Connect Hardware
+1. Connect the **WeAct STM32H743VIT6** board to the **MM4222-QSPI** board.
+2. Connect the **MM4222-QSPI** board to the **VM820C** board.
+3. Connect the **VM820C** board to the **RTD2513A V2.0** board using the **30-pin LVDS cable**.
+4. Connect the **RTD2513A V2.0** board to a **laptop** using the **HDMI cable**.
+   Set the laptop to output the display to the HDMI port.
+5. Power the **VM820C** and **WeAct STM32H743VIT6** boards by using the **USB power from the laptop**.
 
 ### Software Stack
 | Component | Details |
@@ -91,7 +102,7 @@ LobbyEntry/
 
 ---
 
-### Build Instructions
+### Build And Run Instructions
 
 STEP 1: Open Project in STM32CubeIDE
 -------------------------------------
@@ -119,15 +130,17 @@ To switch build configuration:
 1. Right-click on project -> Build Configurations -> Set Active
 2. Select either "Debug" or "Release"
 
-STEP 3: Flash the Firmware to VM820C Board
+STEP 3: Prepare the SDcard
+------------------------------------------
+Copy `assets_sdcard_eve/` folder to SD card root and insert it into VM820C
+
+STEP 4: Flash the Firmware to VM820C Board
 ------------------------------------------
 Using STM32CubeIDE:
-1. Connect VM820C board to PC via USB (ST-LINK connection)
+1. Connect VM820C board to PC via ST-LINK
 2. Power on the VM820C board
-3. In STM32CubeIDE, click Run -> Debug As -> STM32 C/C++ Application
-   OR
-   Click the Debug button (bug icon) in the toolbar
-4. The firmware will be automatically flashed and the debugger will start
+3. In STM32CubeIDE, click Run -> Run As -> STM32 C/C++ Application
+4. The firmware will be automatically flashed and the demo will start
 
 
 ---
@@ -135,3 +148,4 @@ Using STM32CubeIDE:
 ## 📄 License & Copyright
 
 **License**: MIT License  
+
