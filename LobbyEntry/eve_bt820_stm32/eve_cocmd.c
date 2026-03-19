@@ -605,10 +605,6 @@ void EVE_CoCmd_appendF(EVE_HalContext *phost, uint32_t ptr, uint32_t num)
 {
 	EVE_CoCmd_ddd(phost, CMD_APPENDF, ptr, num);
 }
-void EVE_CoCmd_videoStartF(EVE_HalContext *phost)
-{
-	EVE_CoCmd_dd(phost, CMD_VIDEOSTART, OPT_FLASH);
-}
 bool EVE_CoCmd_loadImage_flash(EVE_HalContext *phost, uint32_t dst, uint32_t src, uint32_t *format);
 bool EVE_CoCmd_inflate_flash(EVE_HalContext *phost, uint32_t dst, uint32_t src);
 
