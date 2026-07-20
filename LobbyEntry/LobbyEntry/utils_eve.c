@@ -256,10 +256,10 @@ void utils_eve_scale_to(int32_t im_w, int32_t im_h, int32_t target_w, int32_t ta
 	int32_t translate_y = (target_h - im_h_new) / 2;
 
 	if(translated_x){
-		*translated_x = translated_x;
+		*translated_x = translate_x;
 	}
 	if(translated_y){
-		*translated_y = translated_y;
+		*translated_y = translate_y;
 	}
 
 	EVE_CoDl_bitmapSize(PHOST, NEAREST, BORDER, BORDER, im_w * scale_factor, im_h * scale_factor);
